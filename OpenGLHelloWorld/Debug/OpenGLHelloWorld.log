@@ -1,0 +1,3 @@
+﻿MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol _main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs\glfw3.lib : warning LNK4272: library machine type 'x64' conflicts with target machine type 'x86'
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\Debug\OpenGLHelloWorld.exe : fatal error LNK1120: 1 unresolved externals
