@@ -37,7 +37,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int textureType = 9;
+const int textureType = 5;
 
 int main()
 {
@@ -215,10 +215,7 @@ int main()
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	// set the texture wrapping/filtering options (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
 	// load and generate the texture
 	int width, height, nrChannels;
 	std::string pos = "Textures/" + firstLevel.textures[textureType];
@@ -228,6 +225,11 @@ int main()
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 	else
 	{
@@ -251,6 +253,8 @@ int main()
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -270,9 +274,10 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
-		
 		ourShader.use();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -293,29 +298,31 @@ int main()
 		ourShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 		ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-		//// spotLight
-		//ourShader.setVec3("spotLight.position", camera.Position);
-		//ourShader.setVec3("spotLight.direction", camera.Front);
-		//ourShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		//ourShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		////ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		//ourShader.setFloat("spotLight.constant", 1.0f);
-		//ourShader.setFloat("spotLight.linear", 0.09);
-		//ourShader.setFloat("spotLight.quadratic", 0.032);
-		//ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		//ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		// spotLight
+		ourShader.setVec3("spotLight.position", camera.Position);
+		ourShader.setVec3("spotLight.direction", camera.Front);
+		ourShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		ourShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		ourShader.setFloat("spotLight.constant", 1.0f);
+		ourShader.setFloat("spotLight.linear", 0.09);
+		ourShader.setFloat("spotLight.quadratic", 0.032);
+		ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
-		// point light
-		ourShader.setVec3("pointLights[0].position", firstLevel.lights.at(0).position);
-		ourShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-		ourShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-		ourShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-		ourShader.setFloat("pointLights[0].constant", 1.0f);
-		ourShader.setFloat("pointLights[0].linear", 0.09);
-		ourShader.setFloat("pointLights[0].quadratic", 0.032);
+		
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		for (size_t i = 0; i < firstLevel.lights.size(); i++)
+		{
+			// point light
+			ourShader.setVec3("pointLights[" + to_string(i) + "].position", firstLevel.lights.at(i).position);
+			ourShader.setVec3("pointLights[" + to_string(i) + "].ambient", 0.05f, 0.05f, 0.05f);
+			ourShader.setVec3("pointLights[" + to_string(i) + "].diffuse", 0.8f, 0.8f, 0.8f);
+			ourShader.setVec3("pointLights[" + to_string(i) + "].specular", 1.0f, 1.0f, 1.0f);
+			ourShader.setFloat("pointLights[" + to_string(i) + "].constant", 1.0f);
+			ourShader.setFloat("pointLights[" + to_string(i) + "].linear", 0.09);
+			ourShader.setFloat("pointLights[" + to_string(i) + "].quadratic", 0.032);
+		}
 
 		glBindVertexArray(cubeVAO);
 		for (unsigned int i = 0; i < firstLevel.walls.size(); i++)
@@ -324,9 +331,6 @@ int main()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, firstLevel.walls.at(i).position);
 			ourShader.setMat4("model", model);
-			//ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-			//ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-			//ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
@@ -336,9 +340,6 @@ int main()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, firstLevel.floors.at(i).position);
 			ourShader.setMat4("model", model);
-			//ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-			//ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-			//ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
 			glDrawArrays(GL_TRIANGLES, 30, 6);
 		}
 
@@ -348,9 +349,6 @@ int main()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, firstLevel.doors.at(i).position);
 			ourShader.setMat4("model", model);
-			//ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-			//ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-			//ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
 			glDrawArrays(GL_TRIANGLES, 36, 36);
 		}
 
@@ -367,8 +365,6 @@ int main()
 
 			glBindVertexArray(lightCubeVAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
 		}
 
 

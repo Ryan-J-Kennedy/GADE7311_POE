@@ -1,1 +1,23 @@
-﻿  OpenGLHelloWorld.vcxproj -> D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\x64\Debug\OpenGLHelloWorld.exe
+﻿  Test.cpp
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Shader.h(46,35): warning C4101: 'e': unreferenced local variable
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(63,18): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(63,12): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(67,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(67,13): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(71,18): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(71,12): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(76,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Level.h(76,13): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(264,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(308,46): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(309,50): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(323,71): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(324,75): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(422,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(423,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(427,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(428,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(430,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(431,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Test.cpp(440,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  OpenGLHelloWorld.vcxproj -> D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\x64\Debug\OpenGLHelloWorld.exe
