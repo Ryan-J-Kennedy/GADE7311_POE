@@ -70,20 +70,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\include;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries;$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\include;$(SolutionDir)Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\include;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries;$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\include;$(SolutionDir)Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\include;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries;D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Libraries and Include\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries;$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\include;$(SolutionDir)Libraries\glm;D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Libraries and Include\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;D:\_Work\Year 3\GADE2\Visual Studio projects\OpenGLHelloWorld\OpenGLHelloWorld\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\include;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries;$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\include;$(SolutionDir)Libraries\glm;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\glfw-3.3.4.bin.WIN64\lib-vc2019;C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Libraries and Include\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -164,7 +164,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Test.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>

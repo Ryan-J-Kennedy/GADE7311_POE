@@ -217,7 +217,7 @@ int main()
 	// set the texture wrapping/filtering options (on the currently bound texture object)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load and generate the texture
 	int width, height, nrChannels;
@@ -236,7 +236,7 @@ int main()
 	stbi_image_free(data);
 
 	ourShader.use(); // don't forget to activate the shader before setting uniforms!  
-	glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture"), 0); // set it manually
+	ourShader.setInt("material.diffuse", 0);
 
 	// second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
 	unsigned int lightCubeVAO;
@@ -270,15 +270,9 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		
 		
 		ourShader.use();
-		/*ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-		ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-		ourShader.setVec3("lightPos", firstLevel.lights[2].position);
-		ourShader.setVec3("viewPos", camera.Position);*/
-
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -286,21 +280,53 @@ int main()
 		ourShader.setMat4("view", view);
 
 		// render the cube
-		glBindVertexArray(cubeVAO);
+		
 		glm::mat4 model = glm::mat4(1.0f);
+		ourShader.setVec3("viewPos", camera.Position);
+		ourShader.setFloat("material.shininess", 32.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// directional light
+		ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		ourShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		ourShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+		//// spotLight
+		//ourShader.setVec3("spotLight.position", camera.Position);
+		//ourShader.setVec3("spotLight.direction", camera.Front);
+		//ourShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		//ourShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		////ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		//ourShader.setFloat("spotLight.constant", 1.0f);
+		//ourShader.setFloat("spotLight.linear", 0.09);
+		//ourShader.setFloat("spotLight.quadratic", 0.032);
+		//ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		//ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+		// point light
+		ourShader.setVec3("pointLights[0].position", firstLevel.lights.at(0).position);
+		ourShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		ourShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		ourShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		ourShader.setFloat("pointLights[0].constant", 1.0f);
+		ourShader.setFloat("pointLights[0].linear", 0.09);
+		ourShader.setFloat("pointLights[0].quadratic", 0.032);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glBindVertexArray(cubeVAO);
 		for (unsigned int i = 0; i < firstLevel.walls.size(); i++)
 		{
 			// calculate the model matrix for each object and pass it to shader before drawing
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, firstLevel.walls.at(i).position);
 			ourShader.setMat4("model", model);
-			ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-			ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-			ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
-			ourShader.setVec3("viewPos", camera.Position);
+			//ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
+			//ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
+			//ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
@@ -310,10 +336,9 @@ int main()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, firstLevel.floors.at(i).position);
 			ourShader.setMat4("model", model);
-			ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-			ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-			ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
-			ourShader.setVec3("viewPos", camera.Position);
+			//ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
+			//ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
+			//ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
 			glDrawArrays(GL_TRIANGLES, 30, 6);
 		}
 
@@ -323,10 +348,9 @@ int main()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, firstLevel.doors.at(i).position);
 			ourShader.setMat4("model", model);
-			ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
-			ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
-			ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
-			ourShader.setVec3("viewPos", camera.Position);
+			//ourShader.setVec3("objectColour", 1.0f, 1.0f, 1.0f);
+			//ourShader.setVec3("lightColour", 1.0f, 1.0f, 1.0f);
+			//ourShader.setVec3("lightPos", firstLevel.lights.at(0).position);
 			glDrawArrays(GL_TRIANGLES, 36, 36);
 		}
 
@@ -343,7 +367,10 @@ int main()
 
 			glBindVertexArray(lightCubeVAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
 		}
+
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
