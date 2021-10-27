@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+//#include <OpenGLHelloWorld/stb_image.h>
 #include <iostream>
 #include "Object.h"
 
@@ -18,13 +19,15 @@ class Wall: public Object
 {
 public:
 
+	int texture;
+
 	Wall(){
 		position = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
-	Wall(float posX, float posZ, std::string _type) {
+	Wall(float posX, float posZ, int _texture) {
 		position = glm::vec3(posX, 0.0f, posZ);
-		type = _type;
+		texture = _texture;
 	}
 
 	float* GetVertices() {

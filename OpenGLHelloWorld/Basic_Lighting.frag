@@ -1,21 +1,11 @@
 #version 330 core
-out vec4 FragColour;
+out vec4 FragColor;
 
-in vec3 Normal;
-in vec3 FragPos;
+in vec2 TexCoords;
 
-uniform vec3 lightPos;
-uniform vec3 light2Pos;
-uniform vec3 lightColour;
-uniform vec3 lightColour2;
-uniform vec3 objectColour;
+uniform sampler2D texture_diffuse1;
 
 void main()
-{
-//ambiant
-float ambientStrength = 0.1;
-vec3 amient = ambientStrength * lightColour;
-
-vec3 result = (amient) * objectColour;
-FragColour = vec4(result, 1.0);
+{    
+    FragColor = texture(texture_diffuse1, TexCoords);
 }

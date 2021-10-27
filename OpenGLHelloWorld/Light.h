@@ -22,9 +22,8 @@ public:
 		position = glm::vec3(0.0f, 0.5f, 0.0f);
 	}
 
-	Light(float posX, float posZ, std::string _type) {
+	Light(float posX, float posZ) {
 		position = glm::vec3(posX, 0.5f, posZ);
-		type = _type;
 	}
 
 	float* GetVertices() {
