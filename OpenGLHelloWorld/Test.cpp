@@ -24,16 +24,17 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-//int main();
 void processInput(GLFWwindow* window);
 unsigned int loadTexture(const char* path);
 void Character_callback(GLFWwindow* window, unsigned int codepoint);
 void SplitWords(string str);
-void DoCommands(vector<string> _commands);
+void DoCommands(vector<string> _commands, GLFWwindow* window);
 void LoadCommand(vector<string> _commands);
 void SpawnCommand(vector<string> _commands);
 void HelpCommand();
 void FPSCommand();
+void TriangleCommand();
+void CountPolys();
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -64,6 +65,7 @@ Level level;
 double lastTime = glfwGetTime();
 int nbFrames = 0;
 bool displayFPS = false;
+int triangles = 0;
 
 int main()
 {
@@ -247,6 +249,9 @@ int main()
 	//uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	ourShader.use();
+	ourShader.setInt("depthMap", 1);
+
 	
 	for (size_t i = 0; i < level.textures->size(); i++)
 	{
@@ -265,21 +270,7 @@ int main()
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
-		double currentTime = glfwGetTime();
-		nbFrames++;
-		if (currentTime - lastTime >= 1.0) { // If last prinf() was more than 1 sec ago
-			// printf and reset timer
-			if (displayFPS) {
-				cout << "Frames per second: ";
-				cout << nbFrames << endl;
-				cout << endl;
-				displayFPS = false;
-			}
-
-			nbFrames = 0;
-			lastTime += 1.0;
-		}
-
+		triangles = 0;
 		// per-frame time logic
 		// --------------------
 		float currentFrame = glfwGetTime();
@@ -362,9 +353,10 @@ int main()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, level.walls.at(i).position);
 			ourShader.setMat4("model", model);
+			
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-
+	
 		//Running though level's doors and drawing
 		for (unsigned int i = 0; i < level.doors.size(); i++)
 		{
@@ -415,7 +407,21 @@ int main()
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		
+		//Calculate FPS
+		double currentTime = glfwGetTime();
+		nbFrames++;
+		if (currentTime - lastTime >= 1.0) { // If last prinf() was more than 1 sec ago
+			// printf and reset timer
+			if (displayFPS) {
+				cout << "Frames per second: ";
+				cout << nbFrames << endl;
+				cout << endl;
+				displayFPS = false;
+			}
+
+			nbFrames = 0;
+			lastTime += 1.0;
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -459,6 +465,7 @@ void processInput(GLFWwindow* window)
 		if (glfwGetKey(window, GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS) {
 			consoleActivated = true;
 			commands.clear();
+			cout << "-----------------------------------" << endl;
 			cout << "Console Activiated" << endl;
 			glfwSetCharCallback(window, Character_callback);
 		}
@@ -468,7 +475,7 @@ void processInput(GLFWwindow* window)
 			consoleActivated = false;
 			SplitWords(commandInput);
 			cout << "\n";
-			DoCommands(commands);
+			DoCommands(commands, window);
 			glfwSetCharCallback(window, NULL);
 			commands.clear();
 			commandInput = "";
@@ -481,15 +488,24 @@ void Character_callback(GLFWwindow* window, unsigned int codepoint) {
 	commandInput += (char)codepoint;
 }
 
-void DoCommands(vector<string> _commands) {
+void DoCommands(vector<string> _commands, GLFWwindow* window) {
 	if (_commands[0] == "FPS")
 		FPSCommand();
 	else if (_commands[0] == "LOAD")
 		LoadCommand(_commands);
 	else if (_commands[0] == "SPAWN")
 		SpawnCommand(_commands);
+	else if (_commands[0] == "TRIANGLES")
+		TriangleCommand();
+	else if (_commands[0] == "QUIT")
+		glfwSetWindowShouldClose(window, true);
 	else if (_commands[0] == "HELP")
 		HelpCommand();
+	else
+	{
+		cout << "Unknown command" << endl;
+		HelpCommand();
+	}
 }
 
 void FPSCommand() {
@@ -497,25 +513,38 @@ void FPSCommand() {
 }
 
 void LoadCommand(vector<string> _commands) {
-	Level newLevel(_commands[1]);
+	if (_commands.size() >= 2) {
+		Level newLevel(_commands[1]);
 
-	if (newLevel.LoadLevel()) {
-		cout << "Loading level..." << endl;
-		cout << "Loading doors..." << endl;
-		level.doors = newLevel.doors;
-		cout << "Loading walls..." << endl;
-		level.walls = newLevel.walls;
-		cout << "Loading floors..." << endl;
-		level.floors = newLevel.floors;
-		cout << "Loading models..." << endl;
-		level.models = newLevel.models;
-		cout << "Loading lights..." << endl;
-		level.lights = newLevel.lights;
-		cout << "Level loaded.\n" << endl;
+		if (newLevel.LoadLevel()) {
+			cout << "Loading level..." << endl;
+			cout << "Loading doors..." << endl;
+			level.doors = newLevel.doors;
+			cout << "Loading walls..." << endl;
+			level.walls = newLevel.walls;
+			cout << "Loading floors..." << endl;
+			level.floors = newLevel.floors;
+			cout << "Loading models..." << endl;
+			level.models = newLevel.models;
+			cout << "Loading lights..." << endl;
+			level.lights = newLevel.lights;
+			cout << "Level loaded.\n" << endl;
+		}
+		else {
+			cout << "Could not find level file with that name\n" << endl;
+		}
 	}
 	else {
-		cout << "Could not find level file with that name\n" << endl;
+		cout << "Incorrect use of command." << endl;
+		HelpCommand();
 	}
+}
+
+void TriangleCommand() {
+	CountPolys();
+
+	cout << "Triangles: ";
+	cout << triangles;
 }
 
 void SpawnCommand(vector<string> _commands) {
@@ -541,7 +570,7 @@ void SpawnCommand(vector<string> _commands) {
 }
 
 void HelpCommand() {
-	cout << "Available commands:\nFPS (Displays the current FPS)\nLoad [Level name] (Loads the level)\nSpawn [Model name] [PosX PosY PosZ] (Spawn the model in the world)" << endl;
+	cout << "Available commands:\nFPS (Displays the current FPS)\nLoad [Level name] (Loads the level)\nSpawn [Model name] [PosX PosZ] (Spawn the model in the world)" << endl;
 }
 
 void SplitWords(string str)
@@ -559,6 +588,20 @@ void SplitWords(string str)
 		}
 	}
 	commands.push_back(word);
+}
+
+void CountPolys() {
+	int indices = 0;
+
+	for (auto model : models)
+	{
+		for (auto mesh : model.meshes)
+		{
+			indices += mesh.indices.size();
+		}
+	}
+
+	triangles += indices / 3;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
