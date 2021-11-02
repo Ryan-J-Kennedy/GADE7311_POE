@@ -108,7 +108,11 @@ public:
 				doors.push_back(l);
 			}
 			else if (vecArr[i] == 'G') {
-				ModelClass m(posX, posY, "Models/Backpack/backpack.obj");
+				ModelClass m(posX, posY, "Models/backpack.obj");
+				models.push_back(m);
+			}
+			else if (vecArr[i] == 'S') {
+				ModelClass m(posX, posY, "Models/statue.obj");
 				models.push_back(m);
 			}
 

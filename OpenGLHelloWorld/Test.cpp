@@ -35,6 +35,8 @@ void HelpCommand();
 void FPSCommand();
 void TriangleCommand();
 void CountPolys();
+void Clear();
+void ClearChar();
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -66,6 +68,7 @@ double lastTime = glfwGetTime();
 int nbFrames = 0;
 bool displayFPS = false;
 int triangles = 0;
+bool back = true;
 
 int main()
 {
@@ -93,6 +96,7 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
+	//glfwSwapInterval(0);
 
 	// tell GLFW to capture our mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -211,7 +215,7 @@ int main()
 		 0.5f,  1.5f,  0.5f,  0.0f,  1.0f,  0.0f,	1.0f, 1.0f,
 		 0.5f,  1.5f,  0.5f,  0.0f,  1.0f,  0.0f,	1.0f, 1.0f,
 		-0.5f,  1.5f,  0.5f,  0.0f,  1.0f,  0.0f,	0.0f, 1.0f,
-		-0.5f,  1.5f, -0.5f,  0.0f,  1.0f,  0.0f,	0.0f, 0.0f,
+		-0.5f,  1.5f, -0.5f,  0.0f,  1.0f,  0.0f,	0.0f, 0.0f
 	};
 
 	//Cube VAO and VBO
@@ -380,7 +384,7 @@ int main()
 		}
 
 		glDisable(GL_CULL_FACE);
-		
+
 		ourShader.setInt("material.diffuse", 0);
 		for (size_t i = 0; i < level.models.size(); i++)
 		{
@@ -392,10 +396,11 @@ int main()
 			models[i].Draw(ourShader);
 		}
 
+		lightCubeShader.use();
+		glBindVertexArray(lightCubeVAO);
 		for (unsigned int i = 0; i < level.lights.size(); i++)
 		{
 			// also draw the lamp object
-			lightCubeShader.use();
 			lightCubeShader.setMat4("projection", projection);
 			lightCubeShader.setMat4("view", view);
 			model = glm::mat4(1.0f);
@@ -403,9 +408,9 @@ int main()
 			model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
 			lightCubeShader.setMat4("model", model);
 
-			glBindVertexArray(lightCubeVAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+
 
 		//Calculate FPS
 		double currentTime = glfwGetTime();
@@ -461,10 +466,16 @@ void processInput(GLFWwindow* window)
 			camera.ProcessKeyboard(LEFT, deltaTime);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 			camera.ProcessKeyboard(RIGHT, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			camera.ProcessKeyboard(UP, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			camera.ProcessKeyboard(DOWN, deltaTime);
 
 		if (glfwGetKey(window, GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS) {
 			consoleActivated = true;
 			commands.clear();
+			commandInput = "";
+			//Clear();
 			cout << "-----------------------------------" << endl;
 			cout << "Console Activiated" << endl;
 			glfwSetCharCallback(window, Character_callback);
@@ -479,7 +490,29 @@ void processInput(GLFWwindow* window)
 			glfwSetCharCallback(window, NULL);
 			commands.clear();
 			commandInput = "";
+			
 		}
+
+		if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS && back) {
+			ClearChar();
+			back = false;
+		}
+		if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_RELEASE && !back) {
+			back = true;
+		}
+	}
+}
+
+void Clear() {
+	cout << "\x1B[2J\x1B[H";
+}
+
+void ClearChar() {
+	if (commandInput.size() > 0) {
+		printf("\x1b[1D");
+		printf("\x1b[0K");
+
+		commandInput.pop_back();
 	}
 }
 
@@ -552,14 +585,22 @@ void SpawnCommand(vector<string> _commands) {
 	if (_commands.size() == 4) {
 		Model ourModel("Models/" + _commands[1]);
 
-		float x = 0;
-		stringstream xPos(_commands[2]);
-		xPos >> x;
+		try {
+			float x = 0;
+			float z = 0;
+			stringstream xPos(_commands[2]);
+			stringstream zPos(_commands[3]);
+			zPos >> z;
+			xPos >> x;
 
-		ModelClass newModel(x, x, "Models/" + _commands[1]);
+			ModelClass newModel(x, z, "Models/" + _commands[1]);
 
-		level.models.push_back(newModel);
-		models.push_back(ourModel);
+			level.models.push_back(newModel);
+			models.push_back(ourModel);
+		}
+		catch(exception io){
+
+		}
 	}
 	else {
 		cout << "Incorrect command." << endl;
@@ -570,7 +611,7 @@ void SpawnCommand(vector<string> _commands) {
 }
 
 void HelpCommand() {
-	cout << "Available commands:\nFPS (Displays the current FPS)\nLoad [Level name] (Loads the level)\nSpawn [Model name] [PosX PosZ] (Spawn the model in the world)" << endl;
+	cout << "Available commands:\nFPS (Displays the current FPS)\nLoad [Level name] (Loads the level)\nSpawn [Model name] [PosX PosZ] (Spawn the model in the world)\nTriangles (Displays the polycount)\nQuit (Quits the application)" << endl;
 }
 
 void SplitWords(string str)
